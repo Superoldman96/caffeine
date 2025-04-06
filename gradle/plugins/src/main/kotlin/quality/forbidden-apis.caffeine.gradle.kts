@@ -10,10 +10,9 @@ forbiddenApis {
 }
 
 tasks.withType<CheckForbiddenApis>().configureEach {
-  enabled = System.getProperties().containsKey("forbiddenApis")
-  if (enabled) {
-    forbiddenApis.failOnMissingClasses = !java.toolchain.languageVersion.get()
-        .canCompileOrRun(JavaVersion.current().majorVersion.toInt())
-    incompatibleWithConfigurationCache()
-  }
+  forbiddenApis.failOnMissingClasses = !java.toolchain.languageVersion.get()
+    .canCompileOrRun(JavaVersion.current().majorVersion.toInt())
+  val isEnabled = providers.systemProperty("forbiddenApis")
+  incompatibleWithConfigurationCache()
+  onlyIf { isEnabled.isPresent }
 }

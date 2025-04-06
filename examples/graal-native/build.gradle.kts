@@ -27,7 +27,8 @@ graalvmNative {
       resources.autodetect()
     }
     named("test") {
-      buildArgs.add("--initialize-at-build-time=org.junit.jupiter.engine.config.InstantiatingConfigurationParameterConverter")
+      buildArgs.add("--initialize-at-build-time="
+        + "org.junit.jupiter.engine.config.InstantiatingConfigurationParameterConverter")
       buildArgs.add("--initialize-at-build-time=org.junit.platform.launcher.core.LauncherConfig")
       buildArgs.add("-H:+ReportExceptionStackTraces")
     }
@@ -36,7 +37,7 @@ graalvmNative {
 }
 
 fun caffeine(): Any {
-  if (System.getenv("SNAPSHOT") == "true") {
+  if (providers.environmentVariable("SNAPSHOT").isPresent) {
     return fileTree("../../caffeine/build/libs").also {
       require(!it.files.isEmpty()) { "Caffeine snapshot jar not found" }
     }

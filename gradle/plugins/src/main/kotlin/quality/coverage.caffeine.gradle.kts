@@ -38,9 +38,9 @@ val jacocoFullReport by tasks.registering(JacocoReport::class) {
 tasks.named("coveralls").configure {
   group = "Coverage reports"
   description = "Uploads the aggregated coverage report to Coveralls"
-  dependsOn(jacocoFullReport)
   incompatibleWithConfigurationCache()
-  onlyIf { isCI() }
+  dependsOn(jacocoFullReport)
+  enabled = isCI()
 }
 
 subprojects {

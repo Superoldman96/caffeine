@@ -311,7 +311,7 @@ for (scenario in Scenario.all()) {
       group = "Parameterized Test"
       description = "Runs tests with the given features."
 
-      enabled = (System.getenv("JITPACK") != "true")
+      enabled = !providers.environmentVariable("JITPACK").isPresent
       include("com/github/benmanes/caffeine/cache/**")
 
       systemProperties(

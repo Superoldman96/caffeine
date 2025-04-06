@@ -16,7 +16,6 @@ plugins {
 
 configurations.jmh {
   extendsFrom(configurations["testImplementation"])
-  exclude(module = libs.commons.logging.get().name)
   exclude(module = libs.slf4j.test.get().name)
   exclude(module = libs.jazzer.get().name)
 
@@ -76,16 +75,16 @@ tasks.withType<JmhTask>().configureEach {
   description = "Executes a Java microbenchmark"
   incompatibleWithConfigurationCache()
 
-  inputs.property("javaDistribution", System.getenv("JDK_DISTRIBUTION")).optional(true)
+  inputs.property("javaDistribution",
+    providers.environmentVariable("JDK_DISTRIBUTION")).optional(true)
   inputs.property("benchmarkParameters", jmh.benchmarkParameters)
   inputs.property("includes", includes)
   outputs.file(jmh.resultsFile)
   outputs.cacheIf { true }
 
+  val includePattern = providers.gradleProperty("includePattern")
   doFirst {
-    if (!project.hasProperty("includePattern")) {
-      throw GradleException("jmh: includePattern expected")
-    }
+    require(includePattern.isPresent) { "jmh: includePattern expected" }
   }
   finalizedBy(tasks.named("jmhReport"))
 }

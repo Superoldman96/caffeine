@@ -23,13 +23,8 @@ fun Project.defaultJvmArgs(): List<String> {
   return jvmArgs
 }
 
-fun caffeineSystemProperties(): Map<String, Any> =
-  System.getProperties()
-    .stringPropertyNames()
-    .filter { it.startsWith("caffeine") }
-    .associateWith { System.getProperties().getProperty(it) }
-fun isEarlyAccess(): Boolean = System.getenv("JDK_EA") == "true"
-fun isCI(): Boolean = !System.getenv("CI").isNullOrEmpty()
+fun Project.isEarlyAccess(): Boolean = providers.environmentVariable("JDK_EA").isPresent
+fun Project.isCI(): Boolean = providers.environmentVariable("CI").isPresent
 
 val DisableStrongEncapsulationJvmArgs = buildList {
   listOf("api", "code", "file", "main", "parser", "processing", "tree", "util").forEach {
